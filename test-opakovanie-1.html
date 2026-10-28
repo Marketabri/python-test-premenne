@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Test · Python 1 – opakovanie 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --ink:#0F1A2B; --ink-2:#33415C; --muted:#5A6981;
+  --line:#DEE4EF; --line-soft:#EBEFF7;
+  --primary:#2743E0; --primary-soft:#E9ECFF; --primary-deep:#1C33B8; --on-primary:#FFFFFF;
+  --amber:#D98200; --amber-soft:#FFF0D6;
+  --ok:#0E9E8F; --ok-soft:#DCF3F0;
+  --no:#D5323E; --no-soft:#FCE6E8;
+  --sans:'Inter',system-ui,sans-serif;
+  --head:'Space Grotesk','Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0C1220; --surface:#141C2E; --ink:#E8ECF6; --ink-2:#BAC4DA; --muted:#8894AE;
+    --line:#26314A; --line-soft:#1D2639;
+    --primary:#8098FF; --primary-soft:#1B2450; --primary-deep:#A6B6FF; --on-primary:#0C1220;
+    --amber:#E8A33D; --amber-soft:#3A2A10;
+    --ok:#43C4B4; --ok-soft:#0F3A36;
+    --no:#F0757F; --no-soft:#3B1720;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1220; --surface:#141C2E; --ink:#E8ECF6; --ink-2:#BAC4DA; --muted:#8894AE;
+  --line:#26314A; --line-soft:#1D2639; --primary:#8098FF; --primary-soft:#1B2450;
+  --primary-deep:#A6B6FF; --on-primary:#0C1220; --amber:#E8A33D; --amber-soft:#3A2A10;
+  --ok:#43C4B4; --ok-soft:#0F3A36; --no:#F0757F; --no-soft:#3B1720;
+}
+:root[data-theme="light"]{
+  --bg:#F4F6FB; --surface:#FFFFFF; --ink:#0F1A2B; --ink-2:#33415C; --muted:#5A6981;
+  --line:#DEE4EF; --line-soft:#EBEFF7; --primary:#2743E0; --primary-soft:#E9ECFF;
+  --primary-deep:#1C33B8; --on-primary:#FFFFFF; --amber:#D98200; --amber-soft:#FFF0D6;
+  --ok:#0E9E8F; --ok-soft:#DCF3F0; --no:#D5323E; --no-soft:#FCE6E8;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;
+  line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* ---------- hlavička ---------- */
+header.top{background:linear-gradient(135deg,#0F1A2B,#1B2A6B 65%,#2743E0);color:#fff;
+  padding:40px 0 30px}
+.eyebrow{font-family:var(--head);font-size:.75rem;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:#9FB0EE}
+.eyebrow b{color:#fff;font-weight:600}
+h1{font-family:var(--head);font-weight:700;font-size:clamp(1.75rem,4.6vw,2.5rem);line-height:1.1;
+  letter-spacing:-.02em;margin:.35em 0 0;text-wrap:balance}
+.lede{color:#C3CDEA;margin:.7em 0 0;max-width:64ch;font-size:.98rem}
+.pts{display:flex;gap:24px;flex-wrap:wrap;margin-top:20px;padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.16);font-family:var(--mono);font-size:.78rem;color:#9FB0EE}
+.pts b{font-family:var(--head);color:#fff;font-size:1.2rem;display:block;line-height:1.2}
+
+.ident{display:grid;grid-template-columns:1.6fr 1fr .9fr;gap:16px;margin-top:22px;
+  padding-top:20px;border-top:1px solid rgba(255,255,255,.16)}
+@media(max-width:640px){.ident{grid-template-columns:1fr}}
+.field label{display:block;font-family:var(--mono);font-size:.67rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#9FB0EE;margin-bottom:6px}
+.field input{width:100%;font-family:var(--sans);font-size:1.02rem;color:#fff;
+  background:transparent;border:0;border-bottom:2px solid rgba(255,255,255,.3);padding:5px 2px;
+  border-radius:0;transition:border-color .15s}
+.field input:focus{outline:none;border-bottom-color:#fff}
+.field input:not(:placeholder-shown){border-bottom-color:rgba(255,255,255,.7)}
+.field input::-webkit-calendar-picker-indicator{filter:invert(1)}
+.field.missing input{border-bottom-color:#FF9AA3}
+.note-missing{display:none;color:#FF9AA3;font-size:.85rem;margin-top:6px}
+.field.missing .note-missing{display:block}
+
+/* ---------- lišta ---------- */
+.bar{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(15,26,43,.08)}
+.bar-in{display:flex;align-items:center;gap:14px;padding:11px 0;flex-wrap:wrap}
+.count{font-family:var(--mono);font-size:.82rem;color:var(--muted);white-space:nowrap}
+.count b{color:var(--ink)}
+.track{flex:1;min-width:100px;height:6px;background:var(--line-soft);border-radius:100px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--primary);transition:width .3s}
+.fill.done{background:var(--ok)}
+.btn{font-family:var(--head);font-size:.9rem;font-weight:600;border:1px solid var(--primary);
+  background:var(--primary);color:var(--on-primary);padding:9px 18px;border-radius:9px;
+  cursor:pointer;transition:.15s}
+.btn:hover{background:var(--primary-deep);border-color:var(--primary-deep)}
+.btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.btn.ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+.btn.ghost:hover{background:transparent;color:var(--ink);border-color:var(--ink-2)}
+.btn:disabled{opacity:.5;cursor:default}
+.lockmsg{display:none;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--no);background:var(--no-soft);padding:5px 11px;
+  border-radius:100px;white-space:nowrap}
+.lockmsg.on{display:inline-block}
+
+/* ---------- obsah ---------- */
+main{padding:30px 0 0}
+section{margin-bottom:42px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:8px}
+.sec-mark{font-family:var(--mono);font-weight:600;font-size:1.3rem;color:var(--primary);line-height:1}
+.sec-head h2{font-family:var(--head);font-weight:600;font-size:1.28rem;letter-spacing:-.01em;
+  margin:0;flex:1;text-wrap:balance}
+.score{font-family:var(--mono);font-size:.76rem;letter-spacing:.05em;color:var(--muted);
+  white-space:nowrap;padding:2px 9px;border:1px solid var(--line);border-radius:100px}
+.score.on{color:var(--ink);border-color:var(--ink-2)}
+.howto{color:var(--muted);font-size:.92rem;margin:0 0 18px;max-width:70ch}
+
+.warn{font-size:.9rem;color:var(--ink-2);background:var(--amber-soft);border:1px solid var(--amber);
+  border-left-width:4px;border-radius:var(--r);padding:12px 16px;margin:0 0 26px}
+.warn b{color:var(--amber)}
+
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px 18px;margin-bottom:11px}
+.q.ok{border-left:4px solid var(--ok)}
+.q.bad{border-left:4px solid var(--no)}
+.q .qh{display:flex;gap:10px;align-items:baseline;margin-bottom:10px}
+.q .qn{font-family:var(--mono);font-size:.74rem;font-weight:600;background:var(--primary-soft);
+  color:var(--primary);padding:3px 9px;border-radius:100px;flex-shrink:0}
+.q .qt{font-weight:500;flex:1}
+.q .qt small{display:block;font-weight:400;color:var(--muted);font-size:.84rem;margin-top:2px}
+
+.code{font-family:var(--mono);font-size:.8rem;line-height:1.7;background:#0D1526;color:#E4EAF6;
+  border-radius:11px;padding:12px 15px;overflow-x:auto;white-space:pre;tab-size:4;margin:0}
+.code .k{color:#F2B705}
+.code .s{color:#86DFA9}
+.code .n{color:#9FD2FF}
+.code .c{color:#6E7A92;font-style:italic}
+.code .f{color:#6FE3E1}
+.expr{font-family:var(--mono);font-size:1rem;background:#0D1526;color:#E4EAF6;border-radius:9px;
+  padding:9px 13px;display:inline-block}
+.expr .k{color:#F2B705}.expr .s{color:#86DFA9}.expr .n{color:#9FD2FF}.expr .f{color:#6FE3E1}
+
+.pair{display:grid;grid-template-columns:1fr minmax(190px,.62fr);gap:14px;align-items:start}
+@media(max-width:700px){.pair{grid-template-columns:1fr}}
+.anslab{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+input.ans{font-family:var(--mono);font-size:.95rem;width:100%;padding:9px 12px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+input.ans:focus{outline:2px solid var(--primary);outline-offset:1px}
+input.ans:disabled{opacity:1}
+
+.blank{font-family:var(--mono);font-size:.8rem;padding:2px 7px;border-radius:6px;
+  border:1px solid #2E3E63;background:#060C1A;color:#E4EAF6;text-align:center}
+.blank:focus{outline:none;border-color:#F2B705}
+.blank:disabled{opacity:1}
+.hintrow{font-size:.86rem;color:var(--muted);margin-top:10px}
+.hintrow b{color:var(--ink-2)}
+
+/* ---------- výsledok ---------- */
+.result{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:24px;margin-bottom:28px;display:none}
+.result.on{display:block}
+.result h3{font-family:var(--head);font-size:1.2rem;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:13px;margin-bottom:16px}
+.tile{border:1px solid var(--line);border-radius:11px;padding:12px 14px}
+.tile span{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:2px}
+.tile b{font-family:var(--head);font-size:1.75rem;font-weight:700;line-height:1.2;display:block}
+.tile.g b{color:var(--ok)}
+.tile.p b{color:var(--primary)}
+.brk{font-family:var(--mono);font-size:.85rem;color:var(--ink-2);display:grid;gap:4px}
+.brk div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted var(--line);
+  padding-bottom:3px}
+.result p.hint{color:var(--muted);font-size:.9rem;margin:16px 0 0}
+
+footer.end{background:var(--surface);border-top:1px solid var(--line);padding:28px 0 40px;margin-top:14px}
+footer.end h3{font-family:var(--head);font-size:1.12rem;margin:0 0 .35em}
+footer.end p{color:var(--ink-2);margin:0;max-width:66ch;font-size:.95rem}
+footer.end a{color:var(--primary)}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.hint-link{background:none;border:0;color:var(--muted);font:inherit;font-size:.87rem;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;padding:4px}
+.hint-link:hover{color:var(--ink)}
+.fallback{display:none;margin-top:16px}
+.fallback.on{display:block}
+.fallback textarea{width:100%;height:210px;font-family:var(--mono);font-size:.8rem;padding:11px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+.credit{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);margin-top:22px}
+.credit a{color:var(--primary)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,18px);z-index:60;
+  background:var(--ink);color:var(--bg);font-size:.9rem;padding:11px 18px;border-radius:8px;
+  box-shadow:0 8px 26px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.25s;max-width:88vw}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .bar,.actions,.fallback,.toast,.warn{display:none!important}
+  body{background:#fff;font-size:11pt}
+  .q,.result{break-inside:avoid}
+  .code{background:#F2F2F2;color:#000;border:1px solid #CCC}
+  .code .k,.code .s,.code .n,.code .c,.code .f{color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Python 1 · celky 02 – 04 · <b>Opakovanie 1</b></p>
+    <h1>Opakovanie 1: premenné, podmienky a cykly</h1>
+    <p class="lede">Test je zložený z krátkych príkladov. Pri každom sa buď zisťuje výsledok – čo vyjde alebo čo program vypíše – alebo sa dopĺňa chýbajúca časť kódu. Žiadne teoretické otázky a žiadne vysvetľovanie vlastnými slovami. Všetky odpovede sa vyhodnotia naraz až po ukončení testu.</p>
+    <div class="pts">
+      <div id="pts-casti"></div>
+      <div id="pts-uloh"></div>
+      <div id="pts-body"></div>
+      <div><b>25</b> minút odporúčaný čas</div>
+    </div>
+    <div class="ident">
+      <div class="field" id="f-meno">
+        <label for="meno">Meno a priezvisko</label>
+        <input id="meno" type="text" placeholder=" " autocomplete="name" spellcheck="false">
+        <p class="note-missing">Meno chýba – bez neho sa dokument neoznačí.</p>
+      </div>
+      <div class="field">
+        <label for="trieda">Trieda</label>
+        <input id="trieda" type="text" placeholder=" " spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="datum">Dátum</label>
+        <input id="datum" type="date">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap bar-in">
+    <span class="count"><b id="done">0</b> / <span id="total">0</span> zodpovedaných</span>
+    <span class="track"><span class="fill" id="fill"></span></span>
+    <span class="lockmsg" id="lockmsg">Test je uzamknutý</span>
+    <button class="btn ghost" id="reset" type="button">Vymazať</button>
+    <button class="btn" id="check" type="button">Ukončiť a vyhodnotiť</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="result" id="result">
+    <h3>Vyhodnotenie</h3>
+    <div class="grid">
+      <div class="tile g"><span>Body spolu</span><b id="r-body">0 / 0</b></div>
+      <div class="tile"><span>Úspešnosť</span><b id="r-pct">0 %</b></div>
+      <div class="tile p"><span>Známka</span><b id="r-znamka">–</b></div>
+    </div>
+    <div class="brk" id="r-brk"></div>
+    <p class="hint">Test je uzamknutý, odpovede sa už nedajú meniť. Zostáva ho stiahnuť ako dokument Wordu a odovzdať podľa pokynov vyučujúcej.</p>
+  </div>
+
+  <p class="warn" id="warn"><b>Vyhodnotiť sa dá až na konci.</b> Priebežná kontrola odpovedí nie je možná. Tlačidlo <b>Ukončiť a vyhodnotiť</b> sa stláča až vtedy, keď je test hotový – vtedy sa odpovede uzamknú, zobrazí sa výsledok a test sa dá stiahnuť. Rozpracované odpovede sa v prehliadači priebežne ukladajú, takže sa nestratia.<br><br>
+  <b>Ako sa píšu odpovede:</b> presne to, čo by vypísal Python – bez úvodzoviek a bez slov okolo. Pri viacerých vypísaných riadkoch sa hodnoty oddelia medzerou, napríklad <code>1 2 3</code>. Veľké a malé písmená sa nerozlišujú.</p>
+
+  <div id="hlavne"></div>
+
+</main>
+
+<footer class="end">
+  <div class="wrap">
+    <h3>Odovzdanie</h3>
+    <p>Po ukončení testu sa výsledok stiahne ako súbor <code>.doc</code>, otvorí sa vo Worde a odovzdá podľa pokynov vyučujúcej. V dokumente je meno, trieda, dátum, bodové vyhodnotenie aj celé znenie odpovedí. Sťahovanie je prístupné až po ukončení testu.</p>
+    <div class="actions">
+      <button class="btn" id="export2" type="button">Ukončiť a stiahnuť ako Word</button>
+      <button class="hint-link" id="showfb" type="button">Nestiahlo sa? Zobraziť text na skopírovanie</button>
+    </div>
+    <div class="fallback" id="fb">
+      <textarea id="fbtext" readonly aria-label="Text testu na skopírovanie"></textarea>
+    </div>
+    <p class="credit"><a href="../index.html">← Python</a> · <a href="04_cykly/precvicovanie.html">Precvičovanie cyklov</a> · Spojená škola Nižná</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ================= pomôcky ================= */
+function fnv(s){
+  let x = 0x811c9dc5;
+  s = String(s).toLowerCase().trim();
+  for(let i=0;i<s.length;i++){ x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193) >>> 0; }
+  return x.toString(16).padStart(8,"0");
+}
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const el = id => document.getElementById(id);
+
+const PY = /(#[^\n]*)|("(?:[^"\\]|\\.)*")|\b(False|True|None|and|or|not|in|if|elif|else|while|for|break|continue|def|return)\b|\b(print|input|int|float|str|range|len|type)\b|(\b\d+\.?\d*)/g;
+function hl(src){
+  return esc(src).replace(PY, (m, c, s, k, f) =>
+    '<span class="' + (c ? "c" : s ? "s" : k ? "k" : f ? "f" : "n") + '">' + m + '</span>');
+}
+
+/* ---- zjednotenie odpovede pred porovnaním ---- */
+const strip = s => String(s).toLowerCase().replace(/[„“”"'\u0060]/g, "");
+function outVars(s){
+  const base = strip(s);
+  return [base.replace(/,/g, ".").replace(/\s+/g, " ").trim(),
+          base.replace(/,/g, " ").replace(/\s+/g, " ").trim()];
+}
+const codeNorm = s => strip(s).replace(/\s+/g, "");
+function isGood(key, value, kind){
+  const want = HASH[key];
+  if(!want) return false;
+  const cands = kind === "code" ? [codeNorm(value)] : outVars(value);
+  return cands.some(c => c !== "" && want.includes(fnv(key + "|" + c)));
+}
+
+/* ================= zadania ================= */
+const SEKCIE = [{"id":"a","nazov":"Výsledok výrazu","typ":"expr","howto":"Do políčka patrí hodnota, ktorú by vypísal <code>print</code> s daným výrazom. Desatinné miesta sa oddeľujú bodkou aj čiarkou.","items":[["a1","print(23 // 4)","celočíselné delenie"],["a2","print(23 % 4)","zvyšok po delení"],["a3","print(3 ** 3)","mocnina"],["a4","print(9 / 4)","obyčajné delenie"],["a5","print(len(\"informatika\"))","dĺžka textu"],["a6","print(str(4) + \"2\")","číslo prevedené na text"],["a7","print(float(\"2.5\") + 1)","pretypovanie textu na desatinné číslo"],["a8","print(5 % 2 == 1 or 3 > 8)","zložená podmienka"]]},{"id":"b","nazov":"Čo program vypíše","typ":"out","howto":"Programy nečítajú nič od používateľa – výstup je vždy jednoznačný. Viac vypísaných riadkov sa zapíše do jedného políčka, hodnoty oddelené medzerou.","items":[["b1","a = 5\nb = 2\nprint(a * b, a + b)"],["b2","teplota = 22\nif teplota > 25:\n    print(\"teplo\")\nelse:\n    print(\"prijemne\")"],["b3","znamka = 3\nif znamka == 1:\n    print(\"vyborny\")\nelif znamka == 2:\n    print(\"chvalitebny\")\nelif znamka == 3:\n    print(\"dobry\")\nelse:\n    print(\"ine\")"],["b4","for i in range(4):\n    print(i * 2)"],["b5","sucin = 1\nfor i in range(1, 5):\n    sucin = sucin * i\nprint(sucin)"],["b6","i = 100\nwhile i > 10:\n    i = i // 2\nprint(i)"],["b7","for i in range(1, 10):\n    if i > 3:\n        break\n    print(i)"],["b8","for i in range(1, 8):\n    if i % 2 == 0:\n        continue\n    print(i)"],["b9","cislo = 12\nif cislo > 10:\n    print(\"velke\")\nif cislo % 2 == 0:\n    print(\"parne\")"],["b10","pocet = 0\nfor znak in \"programovanie\":\n    if znak == \"o\":\n        pocet = pocet + 1\nprint(pocet)"]]},{"id":"c","nazov":"Doplniť chýbajúci kód","typ":"fill","howto":"Do každého políčka patrí jedno číslo, slovo alebo operátor tak, aby program robil to, čo je nad ním napísané. Medzery nehrajú rolu.","snips":[{"zadanie":"Program má vypísať čísla 10, 8, 6, 4, 2 – každé na vlastný riadok.","code":"for i in range(10, @@c1@@, @@c2@@):\n    print(i)","w":{"c1":"3.4em","c2":"3.4em"}},{"zadanie":"Program má spočítať, koľko čísel od 1 do 20 je deliteľných tromi.","code":"pocet = @@c3@@\n\nfor i in range(1, 21):\n    if i % 3 @@c4@@ 0:\n        pocet = pocet @@c5@@ 1\n\nprint(pocet)","w":{"c3":"3.2em","c4":"3.4em","c5":"2.8em"}},{"zadanie":"Program má o zadanom čísle rozhodnúť, či je kladné, nula alebo záporné.","code":"cislo = int(input(\"Cislo: \"))\n\nif cislo > 0:\n    print(\"kladne\")\n@@c6@@ cislo == 0:\n    print(\"nula\")\n@@c7@@:\n    print(\"zaporne\")","w":{"c6":"4.6em","c7":"4.6em"}},{"zadanie":"Program sa pýta na číslo dovtedy, kým používateľ nezadá kladné číslo.","code":"cislo = 0\n\nwhile cislo @@c8@@ 0:\n    cislo = int(input(\"Kladne cislo: \"))\n\nprint(\"Dakujem\")","w":{"c8":"3.4em"}}],"keys":["c1","c2","c3","c4","c5","c6","c7","c8"]},{"id":"d","nazov":"Cykly – počet krokov a hodnoty","typ":"short","howto":"Pri počte krokov sa píše jedno číslo. Pri hodnotách sa vypíšu všetky, ktoré cyklus prejde, oddelené medzerou.","items":[["d1","Koľkokrát sa vykoná telo cyklu?","for i in range(1, 20, 4):\n    print(i)","počet krokov"],["d2","Aké hodnoty prejde premenná i?","for i in range(2, 12, 3):\n    print(i)","hodnoty"],["d3","Koľkokrát sa vykoná telo cyklu?","i = 1\nwhile i < 20:\n    print(i)\n    i = i * 3","počet krokov"],["d4","Aké hodnoty prejde premenná i?","for i in range(9, 0, -3):\n    print(i)","hodnoty"]]}];
+
+/* ================= správne odpovede (zahashované) ================= */
+const HASH = {"a1":["31de801c"],"a2":["1c617593"],"a3":["87d9719c"],"a4":["19ba60bd"],"a5":["87310b77"],"a6":["ae99b71c"],"a7":["3c7911b9"],"a8":["598966b8"],"b1":["17ceb714"],"b2":["a5b03521"],"b3":["15299372"],"b4":["2c466b9f"],"b5":["84946ce2"],"b6":["2c9b41fb"],"b7":["65020c4a"],"b8":["44542c0b"],"b9":["bec74d35"],"b10":["9588908e"],"c1":["db0b111d","da0b0f8a"],"c2":["f0a7fa6b"],"c3":["7e045017"],"c4":["62fd1f18"],"c5":["8ca80590"],"c6":["e1579c82"],"c7":["fb7e172c"],"c8":["27641b09"],"d1":["9f785041"],"d2":["6268a9f0"],"d3":["b85d2e45"],"d4":["8c90ff55"]};
+
+/* ================= stav ================= */
+const state = {};          /* kľúč → odpoveď */
+let checked = false;
+let locked = false;
+const KEY = "test-py1-opakovanie-1-v1";
+
+/* ===== učiteľský reštart =====================================================
+   Vymaže uložené odpovede aj uzamknutie – funguje aj po odovzdaní testu.
+   Dva spôsoby:  1) k adrese pridať ?novy      2) stlačiť Ctrl + Alt + N
+   ========================================================================== */
+const CLEAN_URL = location.href.split(/[?#]/)[0];
+function wipeStore(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+if(/(^|[?&#])novy(=|&|$)/.test(location.search + location.hash)){
+  wipeStore();
+  try{ history.replaceState(null, "", CLEAN_URL); }catch(e){}
+}
+document.addEventListener("keydown", ev => {
+  if(ev.ctrlKey && ev.altKey && (ev.key === "n" || ev.key === "N")){
+    ev.preventDefault();
+    if(confirm("Spustiť odznova?\n\nVymažú sa uložené odpovede, hodnotenie aj údaje v hlavičke.")){
+      wipeStore();
+      location.replace(CLEAN_URL);
+    }
+  }
+});
+console.info("Učiteľský reštart: Ctrl+Alt+N alebo adresa s ?novy");
+
+/* ================= rozsah ================= */
+const MAX = {};
+SEKCIE.forEach(s => { MAX[s.id] = s.typ === "fill" ? s.keys.length : s.items.length; });
+const TOTAL = SEKCIE.reduce((n, s) => n + MAX[s.id], 0);
+const bodSlovo = n => n === 1 ? "bod" : (n >= 2 && n <= 4 ? "body" : "bodov");
+const ZNAK = SEKCIE.map(s => s.id.toUpperCase());
+
+/* ================= vykreslenie ================= */
+function bindField(inp, key, kind){
+  inp.dataset.key = key;
+  inp.dataset.kind = kind;
+  inp.addEventListener("input", () => {
+    if(locked){ inp.value = state[key] || ""; return; }
+    state[key] = inp.value;
+    clearCheck(); refresh(); save();
+  });
+}
+
+const hlavne = el("hlavne");
+SEKCIE.forEach(sek => {
+  const V = sek.id.toUpperCase();
+  const sec = document.createElement("section");
+  sec.id = "sec-" + sek.id;
+  sec.innerHTML =
+    '<div class="sec-head"><span class="sec-mark">' + V + '</span>' +
+    '<h2>' + esc(sek.nazov) + '</h2>' +
+    '<span class="score" id="s-' + sek.id + '">' + MAX[sek.id] + ' ' + bodSlovo(MAX[sek.id]) + '</span></div>' +
+    '<p class="howto">' + sek.howto + '</p><div id="list-' + sek.id + '"></div>';
+  hlavne.appendChild(sec);
+  const list = sec.querySelector("#list-" + sek.id);
+
+  if(sek.typ === "expr"){
+    sek.items.forEach(([key, code, pozn], i) => {
+      const q = document.createElement("div");
+      q.className = "q"; q.dataset.key = key;
+      q.innerHTML =
+        '<div class="qh"><span class="qn">' + V + (i+1) + '</span>' +
+        '<span class="qt">Čo vypíše tento riadok?<small>' + esc(pozn) + '</small></span></div>' +
+        '<div class="pair"><div><span class="expr">' + hl(code) + '</span></div>' +
+        '<div><span class="anslab">výsledok</span>' +
+        '<input class="ans" type="text" spellcheck="false" autocomplete="off" ' +
+        'aria-label="Výsledok úlohy ' + V + (i+1) + '" placeholder="hodnota"></div></div>';
+      bindField(q.querySelector("input"), key, "out");
+      list.appendChild(q);
+    });
+  } else if(sek.typ === "out"){
+    sek.items.forEach(([key, code], i) => {
+      const q = document.createElement("div");
+      q.className = "q"; q.dataset.key = key;
+      q.innerHTML =
+        '<div class="qh"><span class="qn">' + V + (i+1) + '</span>' +
+        '<span class="qt">Čo program vypíše?</span></div>' +
+        '<div class="pair"><pre class="code">' + hl(code) + '</pre>' +
+        '<div><span class="anslab">výstup</span>' +
+        '<input class="ans" type="text" spellcheck="false" autocomplete="off" ' +
+        'aria-label="Výstup úlohy ' + V + (i+1) + '" placeholder="výstup"></div></div>';
+      bindField(q.querySelector("input"), key, "out");
+      list.appendChild(q);
+    });
+  } else if(sek.typ === "fill"){
+    sek.snips.forEach((sn, i) => {
+      const q = document.createElement("div");
+      q.className = "q"; q.dataset.key = sek.id + "-" + i;
+      const body = hl(sn.code).replace(/@@([a-z]\d+)@@/g, (m, k) =>
+        '<input class="blank" data-bl="' + k + '" style="width:' + (sn.w[k] || "4em") + '" ' +
+        'placeholder="?" spellcheck="false" autocomplete="off" aria-label="Doplniť políčko ' + k + '">');
+      q.innerHTML =
+        '<div class="qh"><span class="qn">' + V + (i+1) + '</span>' +
+        '<span class="qt">' + esc(sn.zadanie) + '</span></div>' +
+        '<pre class="code">' + body + '</pre>';
+      q.querySelectorAll(".blank").forEach(inp => bindField(inp, inp.dataset.bl, "code"));
+      list.appendChild(q);
+    });
+  } else {
+    sek.items.forEach(([key, otazka, code, lab], i) => {
+      const q = document.createElement("div");
+      q.className = "q"; q.dataset.key = key;
+      q.innerHTML =
+        '<div class="qh"><span class="qn">' + V + (i+1) + '</span>' +
+        '<span class="qt">' + esc(otazka) + '</span></div>' +
+        '<div class="pair"><pre class="code">' + hl(code) + '</pre>' +
+        '<div><span class="anslab">' + esc(lab) + '</span>' +
+        '<input class="ans" type="text" spellcheck="false" autocomplete="off" ' +
+        'aria-label="Odpoveď úlohy ' + V + (i+1) + '" placeholder="' + esc(lab) + '"></div></div>';
+      bindField(q.querySelector("input"), key, "out");
+      list.appendChild(q);
+    });
+  }
+});
+
+el("total").textContent = TOTAL;
+el("pts-casti").innerHTML = '<b>' + SEKCIE.length + '</b> časti ' + ZNAK[0] + ' – ' + ZNAK[ZNAK.length-1];
+el("pts-uloh").innerHTML = '<b>' + TOTAL + '</b> úloh';
+el("pts-body").innerHTML = '<b>' + TOTAL + '</b> ' + bodSlovo(TOTAL) + ' spolu';
+
+const FIELDS = Array.from(document.querySelectorAll("input.ans, input.blank"));
+
+/* ================= postup ================= */
+function answered(){
+  return FIELDS.filter(f => (state[f.dataset.key] || "").trim() !== "").length;
+}
+function refresh(){
+  const n = answered();
+  el("done").textContent = n;
+  const f = el("fill");
+  f.style.width = (n / TOTAL * 100) + "%";
+  f.classList.toggle("done", n === TOTAL);
+}
+function clearCheck(){
+  if(!checked) return;
+  checked = false;
+  el("result").classList.remove("on");
+  document.querySelectorAll(".q").forEach(q => q.classList.remove("ok","bad"));
+  document.querySelectorAll(".score").forEach(s => s.classList.remove("on"));
+  SEKCIE.forEach(s => { el("s-" + s.id).textContent = MAX[s.id] + " " + bodSlovo(MAX[s.id]); });
+}
+
+/* ================= vyhodnotenie ================= */
+function grade(p){ return p >= 90 ? 1 : p >= 75 ? 2 : p >= 50 ? 3 : p >= 30 ? 4 : 5; }
+const GRADE_NAME = {1:"výborný",2:"chválitebný",3:"dobrý",4:"dostatočný",5:"nedostatočný"};
+
+function evaluate(){
+  const res = {detail:{}};
+  SEKCIE.forEach(s => { res[s.id] = 0; });
+  document.querySelectorAll(".q").forEach(q => q.classList.remove("ok","bad"));
+  FIELDS.forEach(f => {
+    const key = f.dataset.key;
+    const v = (state[key] || "").trim();
+    if(!v) return;
+    const good = isGood(key, v, f.dataset.kind);
+    res.detail[key] = good;
+    if(good) res[key[0]] += 1;
+  });
+  /* zafarbenie celej úlohy: zelená, keď v nej sedí všetko vyplnené a nič nechýba */
+  document.querySelectorAll(".q").forEach(q => {
+    const fields = Array.from(q.querySelectorAll("input.ans, input.blank"));
+    const marks = fields.map(f => res.detail[f.dataset.key]);
+    if(marks.every(m => m === undefined)) return;
+    q.classList.add(marks.every(m => m === true) ? "ok" : "bad");
+  });
+  res.total = SEKCIE.reduce((n, s) => n + res[s.id], 0);
+  res.max = TOTAL;
+  res.pct = Math.round(res.total / res.max * 1000) / 10;
+  res.grade = grade(res.pct);
+  return res;
+}
+
+/* ================= uzamknutie ================= */
+function lockUI(){
+  locked = true;
+  FIELDS.forEach(f => { f.disabled = true; });
+  el("reset").style.display = "none";
+  el("warn").style.display = "none";
+  el("lockmsg").classList.add("on");
+  el("check").textContent = "Stiahnuť ako Word";
+  el("export2").textContent = "Stiahnuť ako Word";
+}
+function finish(){
+  if(locked) return true;
+  if(!confirm("Ukončiť test a vyhodnotiť?\n\nOdpovede sa uzamknú a už sa nebudú dať meniť. " +
+              "Potom sa zobrazí výsledok a test sa dá stiahnuť ako dokument Wordu."))
+    return false;
+  lockUI();
+  save();
+  showResult();
+  return true;
+}
+function showResult(scroll){
+  const r = evaluate();
+  checked = true;
+  el("r-body").textContent = r.total + " / " + r.max;
+  el("r-pct").textContent = String(r.pct).replace(".", ",") + " %";
+  el("r-znamka").textContent = r.grade + " – " + GRADE_NAME[r.grade];
+  el("r-brk").innerHTML = SEKCIE.map(s =>
+    '<div><span>' + s.id.toUpperCase() + ' · ' + esc(s.nazov) + '</span><span>' +
+    r[s.id] + ' / ' + MAX[s.id] + '</span></div>').join("");
+  SEKCIE.forEach(s => { el("s-" + s.id).textContent = r[s.id] + " / " + MAX[s.id] + " b"; });
+  document.querySelectorAll(".score").forEach(s => s.classList.add("on"));
+  el("result").classList.add("on");
+  if(scroll !== false) el("result").scrollIntoView({behavior:"smooth", block:"start"});
+  return r;
+}
+el("check").addEventListener("click", () => { if(locked) doExport(); else finish(); });
+
+/* ================= ukladanie ================= */
+let storeOK = true;
+const val = id => el(id).value.trim();
+function save(){
+  if(!storeOK) return;
+  try{
+    localStorage.setItem(KEY, JSON.stringify({
+      meno:val("meno"), trieda:val("trieda"), datum:val("datum"), state:state, locked:locked
+    }));
+  }catch(e){ storeOK = false; }
+}
+function load(){
+  let raw = null;
+  try{ raw = localStorage.getItem(KEY); }catch(e){ storeOK = false; return; }
+  if(!raw) return;
+  let d;
+  try{ d = JSON.parse(raw); }catch(e){ return; }
+  if(d.meno) el("meno").value = d.meno;
+  if(d.trieda) el("trieda").value = d.trieda;
+  if(d.datum) el("datum").value = d.datum;
+  const s = d.state || {};
+  FIELDS.forEach(f => {
+    const v = s[f.dataset.key];
+    if(v === undefined) return;
+    state[f.dataset.key] = v;
+    f.value = v;
+  });
+  if(d.locked) lockUI();
+}
+["meno","trieda","datum"].forEach(id => {
+  el(id).addEventListener("input", () => {
+    save();
+    if(id === "meno") el("f-meno").classList.remove("missing");
+  });
+});
+
+el("reset").addEventListener("click", () => {
+  if(locked) return;
+  if(!confirm("Vymazať všetky odpovede aj údaje v hlavičke?")) return;
+  wipeStore();
+  location.reload();
+});
+
+/* ================= toast ================= */
+let toastT;
+function toast(msg){
+  const t = el("toast");
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove("on"), 3600);
+}
+
+/* ================= export ================= */
+const RE_DIAK = /[\u0300-\u036f]/g;
+const slug = s => s.normalize("NFD").replace(RE_DIAK, "")
+  .replace(/[^A-Za-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "bez-mena";
+function skDate(iso){
+  if(!iso) return "";
+  const p = iso.split("-");
+  return p.length === 3 ? (+p[2]) + ". " + (+p[1]) + ". " + p[0] : iso;
+}
+const mark = ok => ok === true ? "✔" : ok === false ? "✘" : "–";
+const ans = k => (state[k] || "").trim();
+
+function riadky(r){
+  let b = "";
+  SEKCIE.forEach(sek => {
+    const V = sek.id.toUpperCase();
+    b += '<p class="sec">' + V + ' · ' + esc(sek.nazov) + '</p>';
+    if(sek.typ === "expr"){
+      sek.items.forEach(([key, code, pozn], i) => {
+        b += '<p class="row"><span class="n">' + V + (i+1) + '.</span> <code>' + esc(code) + '</code> ' +
+             '<i>(' + esc(pozn) + ')</i><br>&nbsp;&nbsp;&nbsp;→ <b>' +
+             (ans(key) ? esc(ans(key)) : "nevyplnené") + '</b> <span class="m">' +
+             mark(r.detail[key]) + '</span></p>';
+      });
+    } else if(sek.typ === "out"){
+      sek.items.forEach(([key, code], i) => {
+        b += '<p class="row"><span class="n">' + V + (i+1) + '.</span></p><pre>' + esc(code) + '</pre>' +
+             '<p class="row">&nbsp;&nbsp;&nbsp;→ <b>' + (ans(key) ? esc(ans(key)) : "nevyplnené") +
+             '</b> <span class="m">' + mark(r.detail[key]) + '</span></p>';
+      });
+    } else if(sek.typ === "fill"){
+      sek.snips.forEach((sn, i) => {
+        const filled = sn.code.replace(/@@([a-z]\d+)@@/g, (m, k) => "[" + (ans(k) || "?") + "]");
+        const znaky = Object.keys(sn.w).map(k =>
+          k.toUpperCase() + ": " + (ans(k) || "nevyplnené") + " " + mark(r.detail[k])).join("   ");
+        b += '<p class="row"><span class="n">' + V + (i+1) + '.</span> ' + esc(sn.zadanie) + '</p>' +
+             '<pre>' + esc(filled) + '</pre>' +
+             '<p class="row">&nbsp;&nbsp;&nbsp;<b>' + esc(znaky) + '</b></p>';
+      });
+    } else {
+      sek.items.forEach(([key, otazka, code], i) => {
+        b += '<p class="row"><span class="n">' + V + (i+1) + '.</span> ' + esc(otazka) + '</p>' +
+             '<pre>' + esc(code) + '</pre>' +
+             '<p class="row">&nbsp;&nbsp;&nbsp;→ <b>' + (ans(key) ? esc(ans(key)) : "nevyplnené") +
+             '</b> <span class="m">' + mark(r.detail[key]) + '</span></p>';
+      });
+    }
+  });
+  return b;
+}
+
+function buildDoc(r){
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+    'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="utf-8"><title>' + "Python 1 – opakovanie 1" + '</title><style>' +
+    '@page{size:A4;margin:2cm}' +
+    'body{font-family:"Calibri",sans-serif;font-size:10.5pt;color:#000}' +
+    'h1{font-family:"Arial",sans-serif;font-size:16pt;margin:0 0 3pt}' +
+    '.sub{font-size:9.5pt;color:#555;margin:0 0 12pt}' +
+    '.meta{font-size:10.5pt;margin:0 0 3pt}' +
+    '.box{border:1pt solid #000;padding:7pt;margin:10pt 0 14pt;font-size:11pt}' +
+    '.sec{font-family:"Arial",sans-serif;font-size:12pt;font-weight:bold;margin:16pt 0 7pt;' +
+      'border-bottom:0.75pt solid #999;padding-bottom:2pt}' +
+    '.row{margin:0 0 4pt}' +
+    'pre{font-family:"Consolas",monospace;font-size:9.5pt;background:#F2F2F2;border:0.5pt solid #CCC;' +
+      'padding:5pt;margin:3pt 0 5pt}' +
+    'code{font-family:"Consolas",monospace;font-size:10pt}' +
+    '.n{font-family:"Consolas",monospace;color:#555}' +
+    '.m{font-weight:bold}' +
+    '</style></head><body>' +
+    '<h1>' + "Python 1 – opakovanie 1" + '</h1>' +
+    '<p class="sub">' + "Premenné a dátové typy · podmienky · cykly" + '</p>' +
+    '<p class="meta"><b>Meno a priezvisko:</b> ' + (esc(val("meno")) || "&nbsp;") + '</p>' +
+    '<p class="meta"><b>Trieda:</b> ' + (esc(val("trieda")) || "&nbsp;") +
+      '&nbsp;&nbsp;&nbsp;<b>Dátum:</b> ' + (esc(skDate(val("datum"))) || "&nbsp;") + '</p>' +
+    '<div class="box"><b>Vyhodnotenie:</b> ' + r.total + ' z ' + r.max +
+      ' bodov &nbsp;·&nbsp; ' + String(r.pct).replace(".", ",") + ' % &nbsp;·&nbsp; známka ' +
+      r.grade + ' – ' + GRADE_NAME[r.grade] + '<br>' +
+      '<span style="font-size:9.5pt">' +
+      SEKCIE.map(s => s.id.toUpperCase() + ": " + r[s.id] + "/" + MAX[s.id]).join(" &nbsp; ") +
+      '</span></div>' +
+    riadky(r) + '</body></html>';
+}
+
+function buildPlain(r){
+  const L = [];
+  L.push("PYTHON 1 – OPAKOVANIE 1");
+  L.push("Meno a priezvisko: " + (val("meno") || "—"));
+  L.push("Trieda: " + (val("trieda") || "—") + "    Dátum: " + (skDate(val("datum")) || "—"));
+  L.push("Vyhodnotenie: " + r.total + " / " + r.max + " b · " + r.pct + " % · známka " + r.grade);
+  SEKCIE.forEach(sek => {
+    const V = sek.id.toUpperCase();
+    L.push("", "== " + V + " · " + sek.nazov.toUpperCase() + " ==");
+    if(sek.typ === "expr"){
+      sek.items.forEach(([key, code], i) => {
+        L.push(V + (i+1) + ". " + code + "\n   -> " + (ans(key) || "nevyplnené") + "  " + mark(r.detail[key]));
+      });
+    } else if(sek.typ === "out"){
+      sek.items.forEach(([key, code], i) => {
+        L.push(V + (i+1) + ".\n" + code + "\n   -> " + (ans(key) || "nevyplnené") + "  " + mark(r.detail[key]));
+      });
+    } else if(sek.typ === "fill"){
+      sek.snips.forEach((sn, i) => {
+        const filled = sn.code.replace(/@@([a-z]\d+)@@/g, (m, k) => "[" + (ans(k) || "?") + "]");
+        L.push(V + (i+1) + ". " + sn.zadanie + "\n" + filled + "\n   " +
+          Object.keys(sn.w).map(k => k.toUpperCase() + ": " + (ans(k) || "nevyplnené") + " " +
+            mark(r.detail[k])).join("   "));
+      });
+    } else {
+      sek.items.forEach(([key, otazka, code], i) => {
+        L.push(V + (i+1) + ". " + otazka + "\n" + code + "\n   -> " + (ans(key) || "nevyplnené") +
+          "  " + mark(r.detail[key]));
+      });
+    }
+  });
+  return L.join("\n");
+}
+
+function doExport(){
+  if(!val("meno")){
+    el("f-meno").classList.add("missing");
+    el("meno").focus();
+    window.scrollTo({top:0, behavior:"smooth"});
+    toast("Do dokumentu treba meno – pole je hore v hlavičke.");
+    return;
+  }
+  if(!finish()) return;
+  const r = showResult(false);
+  const name = "Test-python1-opakovanie-1" + "_" + slug(val("meno")) + ".doc";
+  try{
+    const blob = new Blob(["\ufeff" + buildDoc(r)], {type:"application/msword"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = name; a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+    toast("Uložené ako " + name + " – otvoriť vo Worde.");
+  }catch(e){
+    el("fbtext").value = buildPlain(r);
+    el("fb").classList.add("on");
+    el("fb").scrollIntoView({behavior:"smooth", block:"center"});
+    toast("Sťahovanie sa nespustilo. Text je pripravený na skopírovanie dole.");
+  }
+}
+el("export2").addEventListener("click", doExport);
+el("showfb").addEventListener("click", () => {
+  if(!finish()) return;
+  el("fbtext").value = buildPlain(evaluate());
+  el("fb").classList.add("on");
+});
+
+/* ================= štart ================= */
+load();
+if(locked) showResult(false);
+if(!val("datum")){
+  const d = new Date();
+  el("datum").value = d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+refresh();
+</script>
+
+</body>
+</html>
